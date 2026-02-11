@@ -21,6 +21,14 @@
   margin-left: 10px; 
 }
 
+.thank-card {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 .title {
   text-align: left;
   margin: 0; 

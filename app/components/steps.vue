@@ -1,6 +1,6 @@
 <template>
-    <v-row class="content_center">   
-
+  {{finish}}
+    <v-row class="content_center" v-if="!finish">   
         <v-col>                        
            <v-stepper v-model="step" class="pa-4">
               <template v-slot:default="{ prev, next }">
@@ -45,10 +45,10 @@
                       <Contacts @valid="onStepValidNumberStep" v-model="data_steps[3].data.contacts"></Contacts>   
                   </v-stepper-window-item>
                   <v-stepper-window-item :value="4">
-                    <BankAccounts @valid="onStepValid" v-model="data_steps[5].data"></BankAccounts>
+                    <BankAccounts @valid="onStepValid" v-model="data_steps[4].data"></BankAccounts>
                   </v-stepper-window-item>
                   <v-stepper-window-item :value="5" >
-                    <Documents @valid="onStepValid" v-model="data_steps[6].data" :email_cert="getEmailAdm" :code="this.data_steps[1].data.invitation_code"></Documents>
+                    <Documents @valid="onStepValid" v-model="data_steps[5].data" :email_cert="getEmailAdm" :code="this.data_steps[1].data.invitation_code"></Documents>
                   </v-stepper-window-item>
                 </v-stepper-window>
                 <v-divider style="margin-top: 100px;"></v-divider>
@@ -72,7 +72,8 @@
                   >
                     {{t('nextStep')}}
 
-                  </v-btn>   
+                  </v-btn>  
+                  
                   <v-btn
                     color="success"
                     v-if="step == steps.length"
@@ -84,7 +85,7 @@
 
                   </v-btn>  
                 </div>
-                <div class="d-flex justify-space-between mt-4 mb-6 mr-4"   v-if="disabled">
+                <!-- <div class="d-flex justify-space-between mt-4 mb-6 mr-4"   v-if="disabled">
                   <v-spacer></v-spacer>
                   <v-alert 
                     :text="t('completeFieldsNextStep')" 
@@ -93,11 +94,28 @@
                     density="compact"   
                     class="mb-2 text-caption pa-2"
                   ></v-alert>
-                </div>
+                </div> -->
+                <v-snackbar
+                  location="bottom"
+                  color="error"
+                  v-model="disabled"
+                >
+                  <v-icon>mdi-alert-circle-outline</v-icon>
+                  {{t('completeFieldsNextStep')}}                  
+                </v-snackbar>
               </template>
             </v-stepper>
         </v-col>        
     </v-row>
+    <v-row v-else>
+      <v-col>
+        entree
+        <ThankCard name="Claudia"  />
+         :name="data_steps[2].data?.social_reason"
+
+      </v-col>
+    </v-row>
+
 </template>
 <script>
 import { useT } from '~/composables/useT'
@@ -109,7 +127,7 @@ export default {
   data () {
     return {     
         pol: null,
-        step: 1,
+        step: 3,
         steps: [1,2, 3, 4, 5],
         data_steps: {
         1: {name: 'policy', valid: false, data: {'acept_policy': false, 'invitation_code': ''}},
@@ -118,7 +136,8 @@ export default {
         4: {name: 'bank_accounts', valid: false, data: null},
         5: {name: 'documents', valid: true, data: null}
         },
-        code: ''
+        code: '',
+        finish: false
       
 
     }
@@ -155,7 +174,7 @@ export default {
     t() {
       return useT().t
     },
-    disabled () {       
+    disabled () {     
       return !this.data_steps[this.step].valid
     },
     getEmailAdm(){
